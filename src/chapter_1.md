@@ -7,3 +7,7 @@ Hello DMAC Tech attendees!
 ```bash
 # This is a code block
 ```
+
+## Azure File Storage
+
+Hello this is my chapter on Azure File Storage.
