@@ -1,0 +1,6 @@
+[book]
+authors = ["Kislin-Jonathan"]
+language = "en"
+multilingual = false
+src = "src"
+title = "DMAC MDbook Demo"
