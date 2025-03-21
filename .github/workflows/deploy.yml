@@ -1,0 +1,55 @@
+name: Deploy mdBook site to Pages
+
+on:
+  push:
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+
+jobs:
+
+  build-mdbook-site:
+    runs-on: ubuntu-latest
+    env:
+      MDBOOK_VERSION: 0.4.45
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install mdBook
+        run: |
+          # curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf -y | sh
+          # rustup update
+          curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
+          cargo binstall --version ${MDBOOK_VERSION} mdbook
+          cargo binstall mdbook-alerts
+
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v3
+
+      - name: Build with mdBook
+        run: mdbook build ./
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          name: github-pages
+
+  deploy-to-pages:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build-mdbook-site
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
